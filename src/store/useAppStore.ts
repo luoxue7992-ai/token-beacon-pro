@@ -1,8 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { InstitutionInfo, StablecoinProduct } from '@/types';
+import { Language } from '@/i18n/translations';
 
 interface AppState {
+  // Language
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  
   // Onboarding
   isOnboarded: boolean;
   institutionInfo: InstitutionInfo | null;
@@ -33,6 +38,10 @@ interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
+      // Language
+      language: 'zh',
+      setLanguage: (lang) => set({ language: lang }),
+      
       // Onboarding
       isOnboarded: false,
       institutionInfo: null,
