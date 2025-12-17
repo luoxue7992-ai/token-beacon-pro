@@ -1,15 +1,17 @@
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/useAppStore";
-import { LayoutDashboard, Star, Wallet, Database, MessageCircle } from "lucide-react";
-
-const navItems = [
-  { id: 'home', label: '产品知识库', icon: Database },
-  { id: 'assistant', label: '开户助手', icon: Star },
-  { id: 'dashboard', label: '资产看板', icon: Wallet },
-] as const;
+import { useLanguage } from "@/hooks/useLanguage";
+import { LayoutDashboard, Star, Wallet, Database } from "lucide-react";
 
 export const Sidebar = () => {
-  const { currentPage, setCurrentPage, favorites } = useAppStore();
+  const { currentPage, setCurrentPage, favorites, language } = useAppStore();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { id: 'home', labelKey: 'productLibrary' as const, icon: Database },
+    { id: 'assistant', labelKey: 'accountAssistant' as const, icon: Star },
+    { id: 'dashboard', labelKey: 'assetDashboard' as const, icon: Wallet },
+  ];
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex flex-col z-40">
@@ -20,8 +22,8 @@ export const Sidebar = () => {
             <LayoutDashboard className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="font-display font-bold text-lg">StableFi</h1>
-            <p className="text-xs text-muted-foreground">机构投资平台</p>
+            <h1 className="font-display font-bold text-lg">{t('stablecoinInvest')}</h1>
+            <p className="text-xs text-muted-foreground">{t('professionalPlatform')}</p>
           </div>
         </div>
       </div>
@@ -43,7 +45,7 @@ export const Sidebar = () => {
               )}
             >
               <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
+              <span className="font-medium">{t(item.labelKey)}</span>
               {item.id === 'assistant' && favorites.length > 0 && (
                 <span className="ml-auto bg-secondary text-secondary-foreground text-xs px-2 py-0.5 rounded-full">
                   {favorites.length}
@@ -57,8 +59,12 @@ export const Sidebar = () => {
       {/* Footer */}
       <div className="p-4 border-t border-border">
         <div className="glass-card p-4 rounded-lg">
-          <p className="text-xs text-muted-foreground mb-2">需要帮助？</p>
-          <p className="text-sm text-foreground">联系专属顾问获取定制化投资方案</p>
+          <p className="text-xs text-muted-foreground mb-2">
+            {language === 'zh' ? '需要帮助？' : 'Need help?'}
+          </p>
+          <p className="text-sm text-foreground">
+            {language === 'zh' ? '联系专属顾问获取定制化投资方案' : 'Contact our advisors for customized solutions'}
+          </p>
         </div>
       </div>
     </aside>
