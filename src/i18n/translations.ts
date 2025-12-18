@@ -8,8 +8,8 @@ export const translations = {
     productLibrary: '产品知识库',
     accountAssistant: '开户助手',
     assetDashboard: '资产看板',
-    stablecoinInvest: '稳定币投资',
-    professionalPlatform: '专业机构投资平台',
+    stablecoinInvest: 'Creda X',
+    professionalPlatform: '专业级机构web3投资平台',
     needHelp: '需要帮助？',
     contactAdvisor: '联系专属顾问获取定制化投资方案',
     
@@ -179,8 +179,8 @@ export const translations = {
     productLibrary: 'Product Library',
     accountAssistant: 'Account Assistant',
     assetDashboard: 'Asset Dashboard',
-    stablecoinInvest: 'Stablecoin Invest',
-    professionalPlatform: 'Professional Institutional Platform',
+    stablecoinInvest: 'Creda X',
+    professionalPlatform: 'Professional Institutional Web3 Investment Platform',
     needHelp: 'Need help?',
     contactAdvisor: 'Contact our advisors for customized solutions',
     
