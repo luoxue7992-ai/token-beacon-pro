@@ -16,12 +16,17 @@ export const Sidebar = () => {
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex flex-col z-40">
       {/* Logo */}
-      <div className="px-5 py-6 border-b border-border">
-        <div className="flex flex-col gap-2">
-          <img src={credaLogo} alt="Creda X" className="h-8 w-auto" />
-          <p className="text-[11px] text-muted-foreground leading-tight tracking-wide">
-            {t('professionalPlatform')}
-          </p>
+      <div className="px-4 py-5 border-b border-border">
+        <div className="flex items-center gap-2.5">
+          <img src={credaLogo} alt="Creda X" className="h-9 w-auto flex-shrink-0" />
+          <div className="min-w-0">
+            <h1 className="font-display font-bold text-base bg-gradient-to-r from-[#585BFF] to-[#1CDEEA] bg-clip-text text-transparent">
+              {t('stablecoinInvest')}
+            </h1>
+            <p className="text-[10px] text-muted-foreground leading-tight truncate">
+              {t('professionalPlatform')}
+            </p>
+          </div>
         </div>
       </div>
 
