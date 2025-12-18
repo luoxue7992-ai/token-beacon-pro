@@ -7,11 +7,7 @@ import { AssetDashboardV2 } from "@/components/dashboard/AssetDashboardV2";
 import { AIChatbot } from "@/components/chat/AIChatbot";
 
 const Index = () => {
-  const { isOnboarded, currentPage } = useAppStore();
-
-  if (!isOnboarded) {
-    return <OnboardingForm />;
-  }
+  const { currentPage } = useAppStore();
 
   return (
     <div className="min-h-screen bg-background">
