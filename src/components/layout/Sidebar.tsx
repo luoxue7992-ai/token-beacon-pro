@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/useAppStore";
 import { useLanguage } from "@/hooks/useLanguage";
-import { LayoutDashboard, Wallet, Database } from "lucide-react";
+import { Wallet, Database } from "lucide-react";
+import credaLogo from "@/assets/creda-logo.svg";
 
 export const Sidebar = () => {
   const { currentPage, setCurrentPage, language } = useAppStore();
@@ -16,15 +17,7 @@ export const Sidebar = () => {
     <aside className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex flex-col z-40">
       {/* Logo */}
       <div className="p-6 border-b border-border">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-            <LayoutDashboard className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="font-display font-bold text-lg">{t('stablecoinInvest')}</h1>
-            <p className="text-xs text-muted-foreground">{t('professionalPlatform')}</p>
-          </div>
-        </div>
+        <img src={credaLogo} alt="Creda X" className="h-10 w-auto" />
       </div>
 
       {/* Navigation */}
