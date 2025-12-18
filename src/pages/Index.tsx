@@ -1,5 +1,4 @@
 import { useAppStore } from "@/store/useAppStore";
-import { OnboardingForm } from "@/components/onboarding/OnboardingForm";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { ProductListV2 } from "@/components/products/ProductListV2";

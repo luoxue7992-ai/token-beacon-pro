@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StablecoinProduct } from "@/types";
+import { StablecoinProduct, BilingualText } from "@/types";
 import { useAppStore } from "@/store/useAppStore";
 import { Button } from "@/components/ui/button";
 import { AccountOpeningFlow } from "./AccountOpeningFlow";
@@ -18,9 +18,14 @@ interface ProductDetailV2Props {
 
 export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
   const { toggleFavorite, isFavorite } = useAppStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const favorite = isFavorite(product.id);
   const [showAccountFlow, setShowAccountFlow] = useState(false);
+
+  const getText = (bilingual: BilingualText | undefined): string => {
+    if (!bilingual) return '';
+    return language === 'zh' ? bilingual.zh : bilingual.en;
+  };
 
   if (showAccountFlow) {
     return <AccountOpeningFlow product={product} onBack={() => setShowAccountFlow(false)} />;
@@ -40,7 +45,7 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
           className="gap-2"
         >
           <Star className={cn("w-4 h-4", favorite && "fill-current")} />
-          {favorite ? "已收藏" : "收藏产品"}
+          {favorite ? t('favorited') : t('addToFavorites')}
         </Button>
       </div>
 
@@ -110,16 +115,16 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
               <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('regionalRestrictions')}</h3>
               <div className="flex flex-wrap gap-2">
                 {product.regionRestrictions && product.regionRestrictions.length > 0 ? (
-                  product.regionRestrictions.map((region) => (
-                    <span key={region} className="chip bg-destructive/10 text-destructive">
+                  product.regionRestrictions.map((region, index) => (
+                    <span key={index} className="chip bg-destructive/10 text-destructive">
                       <XCircle className="w-3 h-3 mr-1" />
-                      {region}
+                      {getText(region)}
                     </span>
                   ))
                 ) : (
                   <span className="chip-success">
                     <CheckCircle className="w-3 h-3 mr-1" />
-                    无地区限制
+                    {t('noRegionRestrictions')}
                   </span>
                 )}
               </div>
@@ -131,7 +136,7 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
                 {product.companyRequirements?.map((req, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm">
                     <AlertCircle className="w-4 h-4 text-secondary" />
-                    {req}
+                    {getText(req)}
                   </li>
                 ))}
               </ul>
@@ -148,7 +153,7 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
 
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">支持方式:</span>
+              <span className="text-sm text-muted-foreground">{t('supportMethods')}</span>
               <div className="flex gap-2">
                 {product.supportsFiat && (
                   <span className="chip-success">{t('fiatSupport')}</span>
@@ -161,15 +166,15 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 rounded-lg bg-muted/30">
-                <h4 className="text-sm font-medium mb-3 text-primary">申购</h4>
+                <h4 className="text-sm font-medium mb-3 text-primary">{t('subscription')}</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('subscriptionThreshold')}</span>
-                    <span>{product.minSubscription}</span>
+                    <span>{getText(product.minSubscription)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('subscriptionTime')}</span>
-                    <span>{product.subscriptionTime}</span>
+                    <span>{getText(product.subscriptionTime)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('subscriptionFee')}</span>
@@ -179,15 +184,15 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
               </div>
 
               <div className="p-4 rounded-lg bg-muted/30">
-                <h4 className="text-sm font-medium mb-3 text-secondary">赎回</h4>
+                <h4 className="text-sm font-medium mb-3 text-secondary">{t('redemption')}</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('redemptionThreshold')}</span>
-                    <span>{product.minRedemption}</span>
+                    <span>{getText(product.minRedemption)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('redemptionTime')}</span>
-                    <span>{product.redemptionTime}</span>
+                    <span>{getText(product.redemptionTime)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('redemptionFee')}</span>
@@ -216,7 +221,7 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('platformRegion')}</span>
-              <span className="font-medium">{product.platformRegion}</span>
+              <span className="font-medium">{getText(product.platformRegion)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('officialWebsite')}</span>
@@ -264,13 +269,13 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
       <div className="glass-card p-6 gradient-border">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-display font-semibold text-lg mb-1">准备开户？</h3>
-            <p className="text-muted-foreground text-sm">完成资格确认，一键联系官方顾问</p>
+            <h3 className="font-display font-semibold text-lg mb-1">{t('readyToApply')}</h3>
+            <p className="text-muted-foreground text-sm">{t('completeVerification')}</p>
           </div>
           <div className="flex gap-3">
             <Button variant="outline" className="gap-2" onClick={() => window.open(product.platformWebsite, '_blank')}>
               <Globe className="w-4 h-4" />
-              访问官网
+              {t('visitOfficialSite')}
             </Button>
             <Button className="gap-2" onClick={() => setShowAccountFlow(true)}>
               {t('applyAccount')}
