@@ -19,8 +19,8 @@ interface AppState {
   isFavorite: (productId: string) => boolean;
   
   // Current page
-  currentPage: 'home' | 'product' | 'assistant' | 'dashboard';
-  setCurrentPage: (page: 'home' | 'product' | 'assistant' | 'dashboard') => void;
+  currentPage: 'home' | 'product' | 'dashboard';
+  setCurrentPage: (page: 'home' | 'product' | 'dashboard') => void;
   
   // Selected product
   selectedProductId: string | null;

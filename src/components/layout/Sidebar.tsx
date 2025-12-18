@@ -1,15 +1,14 @@
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/useAppStore";
 import { useLanguage } from "@/hooks/useLanguage";
-import { LayoutDashboard, Star, Wallet, Database } from "lucide-react";
+import { LayoutDashboard, Wallet, Database } from "lucide-react";
 
 export const Sidebar = () => {
-  const { currentPage, setCurrentPage, favorites, language } = useAppStore();
+  const { currentPage, setCurrentPage, language } = useAppStore();
   const { t } = useLanguage();
 
   const navItems = [
     { id: 'home', labelKey: 'productLibrary' as const, icon: Database },
-    { id: 'assistant', labelKey: 'accountAssistant' as const, icon: Star },
     { id: 'dashboard', labelKey: 'assetDashboard' as const, icon: Wallet },
   ];
 
@@ -46,11 +45,6 @@ export const Sidebar = () => {
             >
               <Icon className="w-5 h-5" />
               <span className="font-medium">{t(item.labelKey)}</span>
-              {item.id === 'assistant' && favorites.length > 0 && (
-                <span className="ml-auto bg-secondary text-secondary-foreground text-xs px-2 py-0.5 rounded-full">
-                  {favorites.length}
-                </span>
-              )}
             </button>
           );
         })}
