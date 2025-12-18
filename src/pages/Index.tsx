@@ -2,9 +2,8 @@ import { useAppStore } from "@/store/useAppStore";
 import { OnboardingForm } from "@/components/onboarding/OnboardingForm";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
-import { ProductList } from "@/components/products/ProductList";
-import { AccountAssistant } from "@/components/assistant/AccountAssistant";
-import { AssetDashboard } from "@/components/dashboard/AssetDashboard";
+import { ProductListV2 } from "@/components/products/ProductListV2";
+import { AssetDashboardV2 } from "@/components/dashboard/AssetDashboardV2";
 import { AIChatbot } from "@/components/chat/AIChatbot";
 
 const Index = () => {
@@ -20,9 +19,8 @@ const Index = () => {
       <div className="ml-64">
         <Header />
         <main className="p-6">
-          {currentPage === 'home' && <ProductList />}
-          {currentPage === 'assistant' && <AccountAssistant />}
-          {currentPage === 'dashboard' && <AssetDashboard />}
+          {currentPage === 'home' && <ProductListV2 />}
+          {currentPage === 'dashboard' && <AssetDashboardV2 />}
         </main>
       </div>
       <AIChatbot />
