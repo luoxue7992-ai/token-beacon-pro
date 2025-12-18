@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { 
   ArrowLeft, ArrowRight, CheckCircle, AlertCircle, 
-  FileText, Building, Shield, ExternalLink, MessageCircle
+  FileText, Building, Shield, MessageCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -280,16 +280,7 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="gap-2"
-                  onClick={() => window.open(product.platformWebsite, '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  {t('visitPlatform')}
-                </Button>
+              <div className="flex justify-center pt-4">
                 <Button 
                   size="lg" 
                   className="gap-2"
