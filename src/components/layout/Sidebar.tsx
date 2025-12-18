@@ -49,18 +49,6 @@ export const Sidebar = () => {
           );
         })}
       </nav>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-border">
-        <div className="glass-card p-4 rounded-lg">
-          <p className="text-xs text-muted-foreground mb-2">
-            {language === 'zh' ? '需要帮助？' : 'Need help?'}
-          </p>
-          <p className="text-sm text-foreground">
-            {language === 'zh' ? '联系专属顾问获取定制化投资方案' : 'Contact our advisors for customized solutions'}
-          </p>
-        </div>
-      </div>
     </aside>
   );
 };
