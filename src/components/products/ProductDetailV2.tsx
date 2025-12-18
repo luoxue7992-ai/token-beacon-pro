@@ -4,7 +4,7 @@ import { useAppStore } from "@/store/useAppStore";
 import { Button } from "@/components/ui/button";
 import { AccountOpeningFlow } from "./AccountOpeningFlow";
 import { 
-  ArrowLeft, Star, ExternalLink, Globe, Shield, 
+  ArrowLeft, Star, ExternalLink, Shield, 
   Clock, DollarSign, Users, TrendingUp, AlertCircle,
   CheckCircle, XCircle, Building
 } from "lucide-react";
@@ -223,17 +223,6 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
               <span className="text-muted-foreground">{t('platformRegion')}</span>
               <span className="font-medium">{getText(product.platformRegion)}</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">{t('officialWebsite')}</span>
-              <a 
-                href={product.platformWebsite} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-primary hover:underline"
-              >
-                {t('visitWebsite')} <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
           </div>
         </div>
 
@@ -272,16 +261,10 @@ export const ProductDetailV2 = ({ product, onBack }: ProductDetailV2Props) => {
             <h3 className="font-display font-semibold text-lg mb-1">{t('readyToApply')}</h3>
             <p className="text-muted-foreground text-sm">{t('completeVerification')}</p>
           </div>
-          <div className="flex gap-3">
-            <Button variant="outline" className="gap-2" onClick={() => window.open(product.platformWebsite, '_blank')}>
-              <Globe className="w-4 h-4" />
-              {t('visitOfficialSite')}
-            </Button>
-            <Button className="gap-2" onClick={() => setShowAccountFlow(true)}>
-              {t('applyAccount')}
-              <ExternalLink className="w-4 h-4" />
-            </Button>
-          </div>
+          <Button className="gap-2" onClick={() => setShowAccountFlow(true)}>
+            {t('applyAccount')}
+            <ExternalLink className="w-4 h-4" />
+          </Button>
         </div>
       </div>
     </div>
