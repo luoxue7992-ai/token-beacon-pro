@@ -7,6 +7,11 @@ export interface InstitutionInfo {
   walletPlatform: string;
 }
 
+export interface BilingualText {
+  zh: string;
+  en: string;
+}
+
 export interface StablecoinProduct {
   id: string;
   name: string;
@@ -24,18 +29,18 @@ export interface StablecoinProduct {
   tokenValue?: string;
   holders?: number;
   // Eligibility
-  regionRestrictions?: string[];
-  companyRequirements?: string[];
+  regionRestrictions?: BilingualText[];
+  companyRequirements?: BilingualText[];
   // Subscription & Redemption
   supportsFiat?: boolean;
   supportsStablecoin?: boolean;
-  minSubscription?: string;
-  subscriptionTime?: string;
-  minRedemption?: string;
-  redemptionTime?: string;
+  minSubscription?: BilingualText;
+  subscriptionTime?: BilingualText;
+  minRedemption?: BilingualText;
+  redemptionTime?: BilingualText;
   // Platform
   platformName?: string;
-  platformRegion?: string;
+  platformRegion?: BilingualText;
   platformWebsite?: string;
 }
 
