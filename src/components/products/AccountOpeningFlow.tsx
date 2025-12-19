@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { 
   ArrowLeft, ArrowRight, CheckCircle, AlertCircle, 
-  FileText, Building, Shield, MessageCircle
+  FileText, Building, Shield, MessageCircle, Download
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -241,6 +241,28 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
                     </div>
                   </div>
                 ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-primary/5 border border-primary/20">
+                <div>
+                  <p className="font-medium text-sm">
+                    {language === 'zh' ? '官方开户文档' : 'Official Account Opening Documents'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {language === 'zh' ? '下载完整的开户资料模板和填写指南' : 'Download complete account opening templates and guidelines'}
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="gap-2 flex-shrink-0"
+                  onClick={() => {
+                    // TODO: Replace with actual document URL
+                    window.open('/documents/account-opening-guide.pdf', '_blank');
+                  }}
+                >
+                  <Download className="w-4 h-4" />
+                  {language === 'zh' ? '一键下载' : 'Download'}
+                </Button>
               </div>
 
               <div className="p-4 rounded-lg bg-info/10 border border-info/20">
