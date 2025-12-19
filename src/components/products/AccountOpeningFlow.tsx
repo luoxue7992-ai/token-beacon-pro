@@ -19,7 +19,7 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
   const [currentStep, setCurrentStep] = useState(1);
   const [confirmedCompany, setConfirmedCompany] = useState(false);
   const [confirmedInvestor, setConfirmedInvestor] = useState(false);
-  const [checkedDocs, setCheckedDocs] = useState<string[]>([]);
+  
 
   const getText = (bilingual: BilingualText | undefined): string => {
     if (!bilingual) return '';
@@ -44,19 +44,10 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
     { id: 'ubo', name: t('docUbo'), desc: t('docUboDesc') },
   ];
 
-  const handleDocCheck = (docId: string) => {
-    setCheckedDocs(prev => 
-      prev.includes(docId) 
-        ? prev.filter(id => id !== docId)
-        : [...prev, docId]
-    );
-  };
-
   const canProceed = () => {
     switch (currentStep) {
       case 1: return confirmedCompany;
       case 2: return confirmedInvestor;
-      case 3: return checkedDocs.length >= 4;
       default: return true;
     }
   };
@@ -231,37 +222,30 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
           {currentStep === 3 && (
             <div className="space-y-6">
               <h3 className="font-display font-semibold text-lg">{t('requiredDocumentsTitle')}</h3>
-              <p className="text-muted-foreground text-sm">{t('selectMinDocuments')}</p>
+              <p className="text-muted-foreground text-sm">{language === 'zh' ? '请准备以下开户所需材料：' : 'Please prepare the following documents for account opening:'}</p>
               
               <div className="grid md:grid-cols-2 gap-3">
-                {REQUIRED_DOCUMENTS.map((doc) => (
+                {REQUIRED_DOCUMENTS.map((doc, index) => (
                   <div 
                     key={doc.id}
-                    className={cn(
-                      "p-4 rounded-lg border transition-all cursor-pointer",
-                      checkedDocs.includes(doc.id)
-                        ? "border-primary bg-primary/10"
-                        : "border-border bg-muted/30 hover:border-muted-foreground"
-                    )}
-                    onClick={() => handleDocCheck(doc.id)}
+                    className="p-4 rounded-lg border border-border bg-muted/30"
                   >
                     <div className="flex items-start gap-3">
-                      <Checkbox 
-                        checked={checkedDocs.includes(doc.id)}
-                        onCheckedChange={() => handleDocCheck(doc.id)}
-                      />
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-sm font-medium flex items-center justify-center">
+                        {index + 1}
+                      </span>
                       <div>
                         <p className="font-medium text-sm">{doc.name}</p>
-                        <p className="text-xs text-muted-foreground">{doc.desc}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{doc.desc}</p>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="p-4 rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground">
-                  {t('selectedDocuments')} <span className="text-primary font-bold">{checkedDocs.length}</span> / 8 {t('documentsOf')}
+              <div className="p-4 rounded-lg bg-info/10 border border-info/20">
+                <p className="text-sm text-info">
+                  {language === 'zh' ? '请确保以上材料齐全，以便顺利完成开户申请。' : 'Please ensure all documents are ready to complete the account opening process smoothly.'}
                 </p>
               </div>
             </div>
