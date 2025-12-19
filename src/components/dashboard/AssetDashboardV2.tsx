@@ -273,10 +273,12 @@ export const AssetDashboardV2 = () => {
                   return (
                     <div 
                       key={wallet.id}
-                      onClick={() => setSelectedWalletId(wallet.id)}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group"
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
                     >
-                      <div className="flex items-center gap-3">
+                      <div 
+                        className="flex items-center gap-3 flex-1 cursor-pointer"
+                        onClick={() => setSelectedWalletId(wallet.id)}
+                      >
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <Wallet className="w-5 h-5 text-primary" />
                         </div>
@@ -287,11 +289,25 @@ export const AssetDashboardV2 = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <span className="font-display font-semibold">
                           ${walletValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </span>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveWallet(wallet.id);
+                          }}
+                          className="p-1 h-8 w-8 text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                        <ChevronRight 
+                          className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors cursor-pointer" 
+                          onClick={() => setSelectedWalletId(wallet.id)}
+                        />
                       </div>
                     </div>
                   );
