@@ -25,13 +25,15 @@ interface WalletConnectorProps {
 type WalletType = 'decentralized' | 'exchange';
 
 const CHAINS = [
-  { id: 'ethereum', name: 'Ethereum', nameZh: '以太坊' },
-  { id: 'bsc', name: 'BNB Chain', nameZh: 'BNB链' },
-  { id: 'polygon', name: 'Polygon', nameZh: 'Polygon' },
-  { id: 'arbitrum', name: 'Arbitrum', nameZh: 'Arbitrum' },
-  { id: 'optimism', name: 'Optimism', nameZh: 'Optimism' },
-  { id: 'avalanche', name: 'Avalanche', nameZh: 'Avalanche' },
-  { id: 'solana', name: 'Solana', nameZh: 'Solana' },
+  { id: 'ethereum', name: 'Ethereum', nameZh: '以太坊', color: 'from-blue-500 to-blue-600', icon: '⟠' },
+  { id: 'bsc', name: 'BNB Chain', nameZh: 'BNB链', color: 'from-yellow-500 to-yellow-600', icon: '◆' },
+  { id: 'polygon', name: 'Polygon', nameZh: 'Polygon', color: 'from-purple-500 to-purple-600', icon: '⬡' },
+  { id: 'arbitrum', name: 'Arbitrum', nameZh: 'Arbitrum', color: 'from-sky-500 to-sky-600', icon: '△' },
+  { id: 'optimism', name: 'Optimism', nameZh: 'Optimism', color: 'from-red-500 to-red-600', icon: '◎' },
+  { id: 'avalanche', name: 'Avalanche', nameZh: 'Avalanche', color: 'from-rose-500 to-rose-600', icon: '▲' },
+  { id: 'solana', name: 'Solana', nameZh: 'Solana', color: 'from-gradient-to-r from-purple-500 to-cyan-500', icon: '◐' },
+  { id: 'base', name: 'Base', nameZh: 'Base', color: 'from-blue-600 to-blue-700', icon: '●' },
+  { id: 'tron', name: 'Tron', nameZh: '波场', color: 'from-red-600 to-red-700', icon: '◈' },
 ];
 
 const WALLET_PLATFORMS = [
@@ -326,12 +328,18 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
                         );
                       }}
                       className={cn(
-                        "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                        "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
                         selectedChains.includes(chain.id)
                           ? "bg-primary text-primary-foreground border-primary"
                           : "bg-background border-border hover:border-primary/50"
                       )}
                     >
+                      <span className={cn(
+                        "w-4 h-4 rounded-full flex items-center justify-center text-[10px] bg-gradient-to-br text-white",
+                        chain.color
+                      )}>
+                        {chain.icon}
+                      </span>
                       {language === 'zh' ? chain.nameZh : chain.name}
                     </button>
                   ))}
