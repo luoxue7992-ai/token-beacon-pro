@@ -11,16 +11,39 @@ import { useLanguage } from "@/hooks/useLanguage";
 interface WalletEntry {
   id: string;
   address: string;
-  type: 'metamask' | 'bnb';
+  type: 'decentralized' | 'exchange';
   name: string;
   status: 'pending' | 'authorized';
+  chain?: string;
+  platform?: string;
 }
 
 interface WalletConnectorProps {
-  onConnect: (wallet: { address: string; type: 'metamask' | 'bnb'; name: string }) => void;
+  onConnect: (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chain?: string; platform?: string }) => void;
 }
 
-type WalletType = 'metamask' | 'bnb';
+type WalletType = 'decentralized' | 'exchange';
+
+const CHAINS = [
+  { id: 'ethereum', name: 'Ethereum', nameZh: '以太坊' },
+  { id: 'bsc', name: 'BNB Chain', nameZh: 'BNB链' },
+  { id: 'polygon', name: 'Polygon', nameZh: 'Polygon' },
+  { id: 'arbitrum', name: 'Arbitrum', nameZh: 'Arbitrum' },
+  { id: 'optimism', name: 'Optimism', nameZh: 'Optimism' },
+  { id: 'avalanche', name: 'Avalanche', nameZh: 'Avalanche' },
+  { id: 'solana', name: 'Solana', nameZh: 'Solana' },
+];
+
+const WALLET_PLATFORMS = [
+  { id: 'metamask', name: 'MetaMask', nameZh: 'MetaMask' },
+  { id: 'trustwallet', name: 'Trust Wallet', nameZh: 'Trust钱包' },
+  { id: 'ledger', name: 'Ledger', nameZh: 'Ledger硬件钱包' },
+  { id: 'trezor', name: 'Trezor', nameZh: 'Trezor硬件钱包' },
+  { id: 'phantom', name: 'Phantom', nameZh: 'Phantom' },
+  { id: 'coinbase', name: 'Coinbase Wallet', nameZh: 'Coinbase钱包' },
+  { id: 'okx', name: 'OKX Wallet', nameZh: 'OKX钱包' },
+  { id: 'other', name: 'Other', nameZh: '其他' },
+];
 
 export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
   const { t, language } = useLanguage();
@@ -29,25 +52,34 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
   const [selectedType, setSelectedType] = useState<WalletType | null>(null);
   const [walletAddress, setWalletAddress] = useState("");
   const [walletName, setWalletName] = useState("");
+  const [selectedChain, setSelectedChain] = useState("");
+  const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showQR, setShowQR] = useState(false);
   const [authorizingId, setAuthorizingId] = useState<string | null>(null);
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const handleAddDecentralized = () => {
-    if (!walletAddress) return;
+    if (!walletAddress || !selectedChain || !selectedPlatform) return;
+    
+    const chainName = CHAINS.find(c => c.id === selectedChain)?.[language === 'zh' ? 'nameZh' : 'name'] || selectedChain;
+    const platformName = WALLET_PLATFORMS.find(p => p.id === selectedPlatform)?.[language === 'zh' ? 'nameZh' : 'name'] || selectedPlatform;
     
     const newEntry: WalletEntry = {
       id: generateId(),
       address: walletAddress,
-      type: 'metamask',
-      name: walletName || `MetaMask ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
-      status: 'authorized'
+      type: 'decentralized',
+      name: walletName || `${platformName} ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
+      status: 'authorized',
+      chain: selectedChain,
+      platform: selectedPlatform
     };
     
     setWalletEntries(prev => [...prev, newEntry]);
     setWalletAddress("");
     setWalletName("");
+    setSelectedChain("");
+    setSelectedPlatform("");
     setSelectedType(null);
     setShowAddForm(false);
   };
@@ -56,7 +88,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
     const newEntry: WalletEntry = {
       id: generateId(),
       address: '',
-      type: 'bnb',
+      type: 'exchange',
       name: walletName || 'BNB Exchange Wallet',
       status: 'pending'
     };
@@ -93,7 +125,9 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
       onConnect({
         address: wallet.address,
         type: wallet.type,
-        name: wallet.name
+        name: wallet.name,
+        chain: wallet.chain,
+        platform: wallet.platform
       });
     });
   };
@@ -132,11 +166,11 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center",
-                    entry.type === 'metamask' 
+                    entry.type === 'decentralized' 
                       ? "bg-gradient-to-br from-orange-500 to-orange-600"
                       : "bg-gradient-to-br from-yellow-500 to-yellow-600"
                   )}>
-                    {entry.type === 'metamask' 
+                    {entry.type === 'decentralized' 
                       ? <Monitor className="w-5 h-5 text-white" />
                       : <Building2 className="w-5 h-5 text-white" />
                     }
@@ -144,10 +178,12 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
                   <div>
                     <p className="font-medium text-sm">{entry.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {entry.type === 'metamask' 
+                      {entry.type === 'decentralized' 
                         ? (language === 'zh' ? '去中心化钱包' : 'Decentralized')
                         : (language === 'zh' ? '交易所托管' : 'Exchange')
                       }
+                      {entry.chain && ` · ${CHAINS.find(c => c.id === entry.chain)?.[language === 'zh' ? 'nameZh' : 'name']}`}
+                      {entry.platform && ` · ${WALLET_PLATFORMS.find(p => p.id === entry.platform)?.[language === 'zh' ? 'nameZh' : 'name']}`}
                       {entry.address && ` · ${entry.address.slice(0, 6)}...${entry.address.slice(-4)}`}
                     </p>
                   </div>
@@ -227,10 +263,10 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
           {/* Wallet Type Selection */}
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => setSelectedType('metamask')}
+              onClick={() => setSelectedType('decentralized')}
               className={cn(
                 "p-4 rounded-xl border-2 transition-all text-left",
-                selectedType === 'metamask'
+                selectedType === 'decentralized'
                   ? "border-primary bg-primary/10"
                   : "border-border hover:border-muted-foreground"
               )}
@@ -249,10 +285,10 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
             </button>
 
             <button
-              onClick={() => setSelectedType('bnb')}
+              onClick={() => setSelectedType('exchange')}
               className={cn(
                 "p-4 rounded-xl border-2 transition-all text-left",
-                selectedType === 'bnb'
+                selectedType === 'exchange'
                   ? "border-primary bg-primary/10"
                   : "border-border hover:border-muted-foreground"
               )}
@@ -272,8 +308,42 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
           </div>
 
           {/* Decentralized Wallet Input */}
-          {selectedType === 'metamask' && (
+          {selectedType === 'decentralized' && (
             <div className="space-y-3 animate-fade-in pt-2">
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">
+                  {language === 'zh' ? '选择链' : 'Select Chain'}
+                </label>
+                <select
+                  value={selectedChain}
+                  onChange={(e) => setSelectedChain(e.target.value)}
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <option value="">{language === 'zh' ? '请选择链' : 'Select a chain'}</option>
+                  {CHAINS.map(chain => (
+                    <option key={chain.id} value={chain.id}>
+                      {language === 'zh' ? chain.nameZh : chain.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">
+                  {language === 'zh' ? '钱包平台' : 'Wallet Platform'}
+                </label>
+                <select
+                  value={selectedPlatform}
+                  onChange={(e) => setSelectedPlatform(e.target.value)}
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <option value="">{language === 'zh' ? '请选择钱包平台' : 'Select a platform'}</option>
+                  {WALLET_PLATFORMS.map(platform => (
+                    <option key={platform.id} value={platform.id}>
+                      {language === 'zh' ? platform.nameZh : platform.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <label className="text-sm font-medium mb-1.5 block">
                   {language === 'zh' ? '钱包名称（可选）' : 'Wallet Name (optional)'}
@@ -297,7 +367,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
               <Button 
                 className="w-full gap-2" 
                 onClick={handleAddDecentralized}
-                disabled={!walletAddress}
+                disabled={!walletAddress || !selectedChain || !selectedPlatform}
               >
                 <Plus className="w-4 h-4" />
                 {language === 'zh' ? '添加到列表' : 'Add to List'}
@@ -306,7 +376,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
           )}
 
           {/* Exchange Wallet Input */}
-          {selectedType === 'bnb' && (
+          {selectedType === 'exchange' && (
             <div className="space-y-3 animate-fade-in pt-2">
               <div>
                 <label className="text-sm font-medium mb-1.5 block">
