@@ -13,7 +13,7 @@ interface ConnectedWallet {
   address: string;
   type: 'decentralized' | 'exchange';
   name: string;
-  chain?: string;
+  chains?: string[];
   platform?: string;
 }
 
@@ -42,7 +42,7 @@ export const AssetDashboardV2 = () => {
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleConnectWallet = (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chain?: string; platform?: string }) => {
+  const handleConnectWallet = (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chains?: string[]; platform?: string }) => {
     setIsLoading(true);
     setTimeout(() => {
       const newWallet: ConnectedWallet = {

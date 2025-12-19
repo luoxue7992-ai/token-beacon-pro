@@ -14,12 +14,12 @@ interface WalletEntry {
   type: 'decentralized' | 'exchange';
   name: string;
   status: 'pending' | 'authorized';
-  chain?: string;
+  chains?: string[];
   platform?: string;
 }
 
 interface WalletConnectorProps {
-  onConnect: (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chain?: string; platform?: string }) => void;
+  onConnect: (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chains?: string[]; platform?: string }) => void;
 }
 
 type WalletType = 'decentralized' | 'exchange';
@@ -52,7 +52,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
   const [selectedType, setSelectedType] = useState<WalletType | null>(null);
   const [walletAddress, setWalletAddress] = useState("");
   const [walletName, setWalletName] = useState("");
-  const [selectedChain, setSelectedChain] = useState("");
+  const [selectedChains, setSelectedChains] = useState<string[]>([]);
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [showQR, setShowQR] = useState(false);
   const [authorizingId, setAuthorizingId] = useState<string | null>(null);
@@ -60,9 +60,8 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const handleAddDecentralized = () => {
-    if (!walletAddress || !selectedChain || !selectedPlatform) return;
+    if (!walletAddress || selectedChains.length === 0 || !selectedPlatform) return;
     
-    const chainName = CHAINS.find(c => c.id === selectedChain)?.[language === 'zh' ? 'nameZh' : 'name'] || selectedChain;
     const platformName = WALLET_PLATFORMS.find(p => p.id === selectedPlatform)?.[language === 'zh' ? 'nameZh' : 'name'] || selectedPlatform;
     
     const newEntry: WalletEntry = {
@@ -71,14 +70,14 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
       type: 'decentralized',
       name: walletName || `${platformName} ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
       status: 'authorized',
-      chain: selectedChain,
+      chains: selectedChains,
       platform: selectedPlatform
     };
     
     setWalletEntries(prev => [...prev, newEntry]);
     setWalletAddress("");
     setWalletName("");
-    setSelectedChain("");
+    setSelectedChains([]);
     setSelectedPlatform("");
     setSelectedType(null);
     setShowAddForm(false);
@@ -126,7 +125,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
         address: wallet.address,
         type: wallet.type,
         name: wallet.name,
-        chain: wallet.chain,
+        chains: wallet.chains,
         platform: wallet.platform
       });
     });
@@ -182,7 +181,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
                         ? (language === 'zh' ? '去中心化钱包' : 'Decentralized')
                         : (language === 'zh' ? '交易所托管' : 'Exchange')
                       }
-                      {entry.chain && ` · ${CHAINS.find(c => c.id === entry.chain)?.[language === 'zh' ? 'nameZh' : 'name']}`}
+                      {entry.chains && entry.chains.length > 0 && ` · ${entry.chains.map(c => CHAINS.find(chain => chain.id === c)?.[language === 'zh' ? 'nameZh' : 'name']).join(', ')}`}
                       {entry.platform && ` · ${WALLET_PLATFORMS.find(p => p.id === entry.platform)?.[language === 'zh' ? 'nameZh' : 'name']}`}
                       {entry.address && ` · ${entry.address.slice(0, 6)}...${entry.address.slice(-4)}`}
                     </p>
@@ -312,20 +311,31 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
             <div className="space-y-3 animate-fade-in pt-2">
               <div>
                 <label className="text-sm font-medium mb-1.5 block">
-                  {language === 'zh' ? '选择链' : 'Select Chain'}
+                  {language === 'zh' ? '选择链（可多选）' : 'Select Chains (multiple)'}
                 </label>
-                <select
-                  value={selectedChain}
-                  onChange={(e) => setSelectedChain(e.target.value)}
-                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <option value="">{language === 'zh' ? '请选择链' : 'Select a chain'}</option>
+                <div className="flex flex-wrap gap-2">
                   {CHAINS.map(chain => (
-                    <option key={chain.id} value={chain.id}>
+                    <button
+                      key={chain.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedChains(prev => 
+                          prev.includes(chain.id) 
+                            ? prev.filter(c => c !== chain.id)
+                            : [...prev, chain.id]
+                        );
+                      }}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                        selectedChains.includes(chain.id)
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background border-border hover:border-primary/50"
+                      )}
+                    >
                       {language === 'zh' ? chain.nameZh : chain.name}
-                    </option>
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium mb-1.5 block">
@@ -367,7 +377,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
               <Button 
                 className="w-full gap-2" 
                 onClick={handleAddDecentralized}
-                disabled={!walletAddress || !selectedChain || !selectedPlatform}
+                disabled={!walletAddress || selectedChains.length === 0 || !selectedPlatform}
               >
                 <Plus className="w-4 h-4" />
                 {language === 'zh' ? '添加到列表' : 'Add to List'}
