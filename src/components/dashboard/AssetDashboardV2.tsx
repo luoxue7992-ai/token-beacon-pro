@@ -59,6 +59,7 @@ export const AssetDashboardV2 = () => {
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'dashboard'>('overview');
+  const [selectedCategory, setSelectedCategory] = useState<AssetCategory | 'all'>('all');
 
   const handleConnectWallet = (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chains?: string[]; platform?: string }) => {
     setIsLoading(true);
@@ -326,7 +327,7 @@ export const AssetDashboardV2 = () => {
             </div>
           </div>
 
-          {/* Holdings Details */}
+          {/* Holdings Details with Category Tabs */}
           <div className="glass-card overflow-hidden">
             <div className="p-4 border-b border-border flex items-center justify-between">
               <h2 className="font-display font-semibold">持仓详情</h2>
@@ -335,6 +336,39 @@ export const AssetDashboardV2 = () => {
                 刷新
               </Button>
             </div>
+            
+            {/* Category Tabs */}
+            <div className="flex gap-2 p-4 border-b border-border overflow-x-auto">
+              <Button
+                variant={selectedCategory === 'all' ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSelectedCategory('all')}
+                className="whitespace-nowrap"
+              >
+                全部
+              </Button>
+              {(Object.keys(CATEGORY_INFO) as AssetCategory[]).map(cat => {
+                const count = filteredAssets.filter(a => a.category === cat).length;
+                if (count === 0) return null;
+                return (
+                  <Button
+                    key={cat}
+                    variant={selectedCategory === cat ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(cat)}
+                    className="gap-2 whitespace-nowrap"
+                  >
+                    <div 
+                      className="w-2 h-2 rounded-full" 
+                      style={{ backgroundColor: CATEGORY_INFO[cat].color }}
+                    />
+                    {CATEGORY_INFO[cat].nameZh}
+                    <span className="text-xs text-muted-foreground">({count})</span>
+                  </Button>
+                );
+              })}
+            </div>
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted/30">
@@ -346,7 +380,9 @@ export const AssetDashboardV2 = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
-                  {filteredAssets.map((asset, index) => (
+                  {filteredAssets
+                    .filter(a => selectedCategory === 'all' || a.category === selectedCategory)
+                    .map((asset, index) => (
                     <tr key={`${asset.token}-${asset.walletId}-${index}`} className="data-table-row">
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
@@ -548,7 +584,7 @@ export const AssetDashboardV2 = () => {
             </div>
           </div>
 
-          {/* Holdings Table */}
+          {/* Holdings Table with Category Tabs */}
           <div className="glass-card overflow-hidden">
             <div className="p-4 border-b border-border flex items-center justify-between">
               <h2 className="font-display font-semibold">持仓详情</h2>
@@ -557,6 +593,39 @@ export const AssetDashboardV2 = () => {
                 刷新
               </Button>
             </div>
+            
+            {/* Category Tabs */}
+            <div className="flex gap-2 p-4 border-b border-border overflow-x-auto">
+              <Button
+                variant={selectedCategory === 'all' ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setSelectedCategory('all')}
+                className="whitespace-nowrap"
+              >
+                全部
+              </Button>
+              {(Object.keys(CATEGORY_INFO) as AssetCategory[]).map(cat => {
+                const count = filteredAssets.filter(a => a.category === cat).length;
+                if (count === 0) return null;
+                return (
+                  <Button
+                    key={cat}
+                    variant={selectedCategory === cat ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(cat)}
+                    className="gap-2 whitespace-nowrap"
+                  >
+                    <div 
+                      className="w-2 h-2 rounded-full" 
+                      style={{ backgroundColor: CATEGORY_INFO[cat].color }}
+                    />
+                    {CATEGORY_INFO[cat].nameZh}
+                    <span className="text-xs text-muted-foreground">({count})</span>
+                  </Button>
+                );
+              })}
+            </div>
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted/30">
@@ -568,7 +637,9 @@ export const AssetDashboardV2 = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
-                  {filteredAssets.map((asset, index) => (
+                  {filteredAssets
+                    .filter(a => selectedCategory === 'all' || a.category === selectedCategory)
+                    .map((asset, index) => (
                     <tr key={`${asset.token}-${asset.walletId}-${index}`} className="data-table-row">
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
