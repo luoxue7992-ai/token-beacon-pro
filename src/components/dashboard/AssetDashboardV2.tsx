@@ -11,8 +11,10 @@ import { useLanguage } from "@/hooks/useLanguage";
 interface ConnectedWallet {
   id: string;
   address: string;
-  type: 'metamask' | 'bnb';
+  type: 'decentralized' | 'exchange';
   name: string;
+  chain?: string;
+  platform?: string;
 }
 
 interface Asset {
@@ -40,7 +42,7 @@ export const AssetDashboardV2 = () => {
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleConnectWallet = (wallet: { address: string; type: 'metamask' | 'bnb'; name: string }) => {
+  const handleConnectWallet = (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chain?: string; platform?: string }) => {
     setIsLoading(true);
     setTimeout(() => {
       const newWallet: ConnectedWallet = {
