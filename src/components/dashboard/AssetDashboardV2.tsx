@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { WalletConnector } from "./WalletConnector";
 import { 
   Wallet, Plus, TrendingUp, PieChart, 
-  DollarSign, BarChart3, Eye, Trash2, RefreshCw, Coins
+  DollarSign, Eye, Trash2, RefreshCw, Coins, ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -58,7 +58,6 @@ export const AssetDashboardV2 = () => {
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'dashboard'>('overview');
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | 'all'>('all');
 
   const handleConnectWallet = (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chains?: string[]; platform?: string }) => {
@@ -98,6 +97,8 @@ export const AssetDashboardV2 = () => {
     acc[asset.category] = (acc[asset.category] || 0) + asset.value;
     return acc;
   }, {} as Record<AssetCategory, number>);
+
+  const selectedWallet = selectedWalletId ? wallets.find(w => w.id === selectedWalletId) : null;
 
   if (wallets.length === 0 && !showAddWallet) {
     return (
@@ -147,41 +148,41 @@ export const AssetDashboardV2 = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold mb-1">{t('dashboardTitle')}</h1>
+          <h1 className="font-display text-2xl font-bold mb-1">
+            {selectedWallet ? selectedWallet.name : t('dashboardTitle')}
+          </h1>
           <p className="text-muted-foreground">
-            {wallets.length} 个钱包已连接
+            {selectedWallet 
+              ? `${selectedWallet.address.slice(0, 6)}...${selectedWallet.address.slice(-4)}`
+              : `${wallets.length} 个钱包已连接`
+            }
           </p>
         </div>
-        <Button onClick={() => setShowAddWallet(true)} className="gap-2">
-          <Plus className="w-4 h-4" />
-          添加钱包
-        </Button>
+        <div className="flex gap-2">
+          {selectedWallet && (
+            <>
+              <Button variant="outline" onClick={() => setSelectedWalletId(null)} className="gap-2">
+                <Eye className="w-4 h-4" />
+                返回 Overview
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => handleRemoveWallet(selectedWalletId)}
+                className="gap-2 text-destructive hover:text-destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+                删除钱包
+              </Button>
+            </>
+          )}
+          <Button onClick={() => setShowAddWallet(true)} className="gap-2">
+            <Plus className="w-4 h-4" />
+            添加钱包
+          </Button>
+        </div>
       </div>
-
-      {/* Main Tabs: Overview / Dashboard */}
-      <div className="flex gap-2 border-b border-border pb-2">
-        <Button
-          variant={activeTab === 'overview' ? "secondary" : "ghost"}
-          size="sm"
-          onClick={() => { setActiveTab('overview'); setSelectedWalletId(null); }}
-          className="gap-2"
-        >
-          <Eye className="w-4 h-4" />
-          Overview
-        </Button>
-        <Button
-          variant={activeTab === 'dashboard' ? "secondary" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab('dashboard')}
-          className="gap-2"
-        >
-          <BarChart3 className="w-4 h-4" />
-          资产看板
-        </Button>
-      </div>
-
-      {/* Overview Tab */}
-      {activeTab === 'overview' && (
+      {/* Overview View - When no wallet is selected */}
+      {!selectedWalletId && (
         <div className="space-y-6">
           {/* Stats Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -280,11 +281,11 @@ export const AssetDashboardV2 = () => {
               </div>
             </div>
 
-            {/* Connected Wallets */}
+            {/* Connected Wallets - Clickable */}
             <div className="glass-card p-6">
               <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-primary" />
-                已连接钱包
+                组合钱包
               </h2>
 
               <div className="space-y-3">
@@ -294,14 +295,15 @@ export const AssetDashboardV2 = () => {
                   return (
                     <div 
                       key={wallet.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                      onClick={() => setSelectedWalletId(wallet.id)}
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <Wallet className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                          <p className="font-medium text-sm">{wallet.name}</p>
+                          <p className="font-medium text-sm group-hover:text-primary transition-colors">{wallet.name}</p>
                           <p className="text-xs text-muted-foreground">
                             {wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
                           </p>
@@ -311,14 +313,7 @@ export const AssetDashboardV2 = () => {
                         <span className="font-display font-semibold">
                           ${walletValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveWallet(wallet.id)}
-                          className="px-2 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
                     </div>
                   );
@@ -415,36 +410,9 @@ export const AssetDashboardV2 = () => {
           </div>
         </div>
       )}
-
-      {/* Dashboard Tab - Individual Wallet View */}
-      {activeTab === 'dashboard' && (
+      {/* Individual Wallet View */}
+      {selectedWalletId && (
         <div className="space-y-6">
-          {/* Wallet Selector */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <Button
-              variant={selectedWalletId === null ? "secondary" : "outline"}
-              size="sm"
-              onClick={() => setSelectedWalletId(null)}
-              className="gap-2 whitespace-nowrap"
-            >
-              <Eye className="w-4 h-4" />
-              全部钱包
-            </Button>
-            {wallets.map(wallet => (
-              <div key={wallet.id} className="flex items-center gap-1">
-                <Button
-                  variant={selectedWalletId === wallet.id ? "secondary" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedWalletId(wallet.id)}
-                  className="gap-2 whitespace-nowrap"
-                >
-                  <Wallet className="w-4 h-4" />
-                  {wallet.name}
-                </Button>
-              </div>
-            ))}
-          </div>
-
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="stat-card">
