@@ -51,3 +51,27 @@ export interface WalletAsset {
   apy: number;
   chain: string;
 }
+
+// Dashboard types
+export interface ConnectedWallet {
+  id: string;
+  address: string;
+  type: 'decentralized' | 'exchange';
+  name: string;
+  chains?: string[];
+  platform?: string;
+}
+
+export type AssetCategory = 'crypto' | 'tokenised_mmf' | 'tokenised_gold' | 'stablecoin';
+
+export interface DashboardAsset {
+  token: string;
+  balance: number;
+  value: number;
+  price: number;
+  apy7d: number;
+  profit: number;
+  chain: string;
+  walletId: string;
+  category: AssetCategory;
+}

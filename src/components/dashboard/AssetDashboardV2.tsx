@@ -7,30 +7,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
-
-interface ConnectedWallet {
-  id: string;
-  address: string;
-  type: 'decentralized' | 'exchange';
-  name: string;
-  chains?: string[];
-  platform?: string;
-}
-
-// 资产类别
-type AssetCategory = 'crypto' | 'tokenised_mmf' | 'tokenised_gold' | 'stablecoin';
-
-interface Asset {
-  token: string;
-  balance: number;
-  value: number;
-  price: number;
-  apy7d: number; // 7日年化
-  profit: number; // 持仓收益
-  chain: string;
-  walletId: string;
-  category: AssetCategory;
-}
+import { useAppStore } from "@/store/useAppStore";
+import { AssetCategory } from "@/types";
 
 const CATEGORY_INFO: Record<AssetCategory, { name: string; nameZh: string; color: string }> = {
   crypto: { name: 'Cryptocurrency', nameZh: '加密货币', color: '#f59e0b' },
@@ -39,22 +17,15 @@ const CATEGORY_INFO: Record<AssetCategory, { name: string; nameZh: string; color
   stablecoin: { name: 'Stablecoin', nameZh: '稳定币', color: '#10b981' },
 };
 
-// Mock assets data with categories
-const generateMockAssets = (walletId: string): Asset[] => [
-  { token: "USDY", balance: 125000, value: 130421.25, price: 1.0434, apy7d: 5.25, profit: 5421.25, chain: "Ethereum", walletId, category: 'tokenised_mmf' },
-  { token: "BUIDL", balance: 500000, value: 500000, price: 1.0, apy7d: 4.89, profit: 12450.00, chain: "Ethereum", walletId, category: 'tokenised_mmf' },
-  { token: "PAXG", balance: 15.5, value: 40235.50, price: 2596.16, apy7d: 0, profit: 2235.50, chain: "Ethereum", walletId, category: 'tokenised_gold' },
-  { token: "XAUT", balance: 8.2, value: 21288.40, price: 2596.15, apy7d: 0, profit: 1288.40, chain: "Ethereum", walletId, category: 'tokenised_gold' },
-  { token: "ETH", balance: 25.8, value: 96750.00, price: 3750.00, apy7d: 3.2, profit: 8750.00, chain: "Ethereum", walletId, category: 'crypto' },
-  { token: "BTC", balance: 1.25, value: 131250.00, price: 105000.00, apy7d: 0, profit: 21250.00, chain: "Bitcoin", walletId, category: 'crypto' },
-  { token: "USDC", balance: 85000, value: 85000, price: 1.0, apy7d: 0, profit: 0, chain: "Ethereum", walletId, category: 'stablecoin' },
-  { token: "USDT", balance: 50000, value: 50000, price: 1.0, apy7d: 0, profit: 0, chain: "BSC", walletId, category: 'stablecoin' },
-];
-
 export const AssetDashboardV2 = () => {
   const { t } = useLanguage();
-  const [wallets, setWallets] = useState<ConnectedWallet[]>([]);
-  const [assets, setAssets] = useState<Asset[]>([]);
+  const { 
+    dashboardWallets: wallets, 
+    dashboardAssets: assets, 
+    addDashboardWallet, 
+    removeDashboardWallet 
+  } = useAppStore();
+  
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,20 +34,14 @@ export const AssetDashboardV2 = () => {
   const handleConnectWallet = (wallet: { address: string; type: 'decentralized' | 'exchange'; name: string; chains?: string[]; platform?: string }) => {
     setIsLoading(true);
     setTimeout(() => {
-      const newWallet: ConnectedWallet = {
-        id: Date.now().toString(),
-        ...wallet
-      };
-      setWallets(prev => [...prev, newWallet]);
-      setAssets(prev => [...prev, ...generateMockAssets(newWallet.id)]);
+      addDashboardWallet(wallet);
       setShowAddWallet(false);
       setIsLoading(false);
     }, 1500);
   };
 
   const handleRemoveWallet = (walletId: string) => {
-    setWallets(prev => prev.filter(w => w.id !== walletId));
-    setAssets(prev => prev.filter(a => a.walletId !== walletId));
+    removeDashboardWallet(walletId);
     if (selectedWalletId === walletId) {
       setSelectedWalletId(null);
     }
