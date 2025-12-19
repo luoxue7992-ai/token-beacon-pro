@@ -33,6 +33,10 @@ interface AppState {
   // Chat
   isChatOpen: boolean;
   toggleChat: () => void;
+  
+  // Sidebar
+  sidebarCollapsed: boolean;
+  toggleSidebar: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -74,6 +78,10 @@ export const useAppStore = create<AppState>()(
       // Chat
       isChatOpen: false,
       toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
+      
+      // Sidebar
+      sidebarCollapsed: false,
+      toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
     }),
     {
       name: 'stablecoin-invest-storage',
