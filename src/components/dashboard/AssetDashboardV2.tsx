@@ -559,61 +559,59 @@ export const AssetDashboardV2 = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Asset Distribution by Category */}
-            <div className="glass-card p-6">
-              <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
-                <PieChart className="w-5 h-5 text-primary" />
-                资产分布
-              </h2>
+          {/* Asset Distribution by Category */}
+          <div className="glass-card p-6">
+            <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+              <PieChart className="w-5 h-5 text-primary" />
+              资产分布
+            </h2>
 
-              <div className="flex items-center gap-8">
-                <div className="relative w-32 h-32">
-                  <svg viewBox="0 0 100 100" className="transform -rotate-90">
-                    {(() => {
-                      let offset = 0;
-                      const total = Object.values(categoryDistribution).reduce((a, b) => a + b, 0);
-                      if (total === 0) return null;
-                      return (Object.entries(categoryDistribution) as [AssetCategory, number][]).map(([category, value]) => {
-                        const percentage = (value / total) * 100;
-                        const dashArray = `${percentage} ${100 - percentage}`;
-                        const currentOffset = offset;
-                        offset += percentage;
-                        return (
-                          <circle
-                            key={category}
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            fill="none"
-                            stroke={CATEGORY_INFO[category].color}
-                            strokeWidth="20"
-                            strokeDasharray={dashArray}
-                            strokeDashoffset={-currentOffset}
-                            className="transition-all duration-500"
-                          />
-                        );
-                      });
-                    })()}
-                  </svg>
-                </div>
-
-                <div className="flex-1 space-y-2">
-                  {(Object.entries(categoryDistribution) as [AssetCategory, number][]).map(([category, value]) => (
-                    <div key={category} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: CATEGORY_INFO[category].color }}
+            <div className="flex items-center gap-8">
+              <div className="relative w-32 h-32">
+                <svg viewBox="0 0 100 100" className="transform -rotate-90">
+                  {(() => {
+                    let offset = 0;
+                    const total = Object.values(categoryDistribution).reduce((a, b) => a + b, 0);
+                    if (total === 0) return null;
+                    return (Object.entries(categoryDistribution) as [AssetCategory, number][]).map(([category, value]) => {
+                      const percentage = (value / total) * 100;
+                      const dashArray = `${percentage} ${100 - percentage}`;
+                      const currentOffset = offset;
+                      offset += percentage;
+                      return (
+                        <circle
+                          key={category}
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          fill="none"
+                          stroke={CATEGORY_INFO[category].color}
+                          strokeWidth="20"
+                          strokeDasharray={dashArray}
+                          strokeDashoffset={-currentOffset}
+                          className="transition-all duration-500"
                         />
-                        <span>{CATEGORY_INFO[category].nameZh}</span>
-                      </div>
-                      <span className="font-display font-semibold">
-                        ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                      </span>
+                      );
+                    });
+                  })()}
+                </svg>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                {(Object.entries(categoryDistribution) as [AssetCategory, number][]).map(([category, value]) => (
+                  <div key={category} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: CATEGORY_INFO[category].color }}
+                      />
+                      <span>{CATEGORY_INFO[category].nameZh}</span>
                     </div>
-                  ))}
-                </div>
+                    <span className="font-display font-semibold">
+                      ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
