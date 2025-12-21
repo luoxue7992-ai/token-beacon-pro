@@ -478,9 +478,9 @@ export const AssetDashboardV2 = () => {
                 <thead className="bg-muted/30">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">代币名称</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">仓位</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">数量</th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">价格</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">账户余额</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">市值</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
@@ -668,9 +668,9 @@ export const AssetDashboardV2 = () => {
                 <thead className="bg-muted/30">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">代币名称</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">仓位</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">数量</th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">价格</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">账户余额</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">市值</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
