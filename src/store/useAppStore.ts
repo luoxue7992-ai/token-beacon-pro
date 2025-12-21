@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { InstitutionInfo, ConnectedWallet, DashboardAsset, AssetCategory } from '@/types';
+import { InstitutionInfo, ConnectedWallet, DashboardAsset, AssetCategory, ManualAssetInput } from '@/types';
 import { Language } from '@/i18n/translations';
 
 // Mock assets generator
@@ -54,6 +54,7 @@ interface AppState {
   dashboardWallets: ConnectedWallet[];
   dashboardAssets: DashboardAsset[];
   addDashboardWallet: (wallet: Omit<ConnectedWallet, 'id'>) => void;
+  addManualWallet: (name: string, address: string, asset: ManualAssetInput) => void;
   removeDashboardWallet: (walletId: string) => void;
 }
 
@@ -113,6 +114,35 @@ export const useAppStore = create<AppState>()(
         set((state) => ({
           dashboardWallets: [...state.dashboardWallets, newWallet],
           dashboardAssets: [...state.dashboardAssets, ...newAssets]
+        }));
+      },
+      addManualWallet: (name, address, asset) => {
+        const walletId = Date.now().toString();
+        const newWallet: ConnectedWallet = {
+          id: walletId,
+          name,
+          address,
+          type: 'manual',
+        };
+        const currentPrice = asset.purchasePrice * 1.05; // Mock current price with 5% gain
+        const value = asset.quantity * currentPrice;
+        const profit = value - (asset.quantity * asset.purchasePrice);
+        const newAsset: DashboardAsset = {
+          token: asset.token,
+          balance: asset.quantity,
+          value,
+          price: currentPrice,
+          apy7d: 0,
+          profit,
+          chain: 'Manual',
+          walletId,
+          category: asset.category,
+          purchaseTime: asset.purchaseTime,
+          purchasePrice: asset.purchasePrice,
+        };
+        set((state) => ({
+          dashboardWallets: [...state.dashboardWallets, newWallet],
+          dashboardAssets: [...state.dashboardAssets, newAsset]
         }));
       },
       removeDashboardWallet: (walletId) => {
