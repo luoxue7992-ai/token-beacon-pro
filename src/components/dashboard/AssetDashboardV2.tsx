@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WalletConnector } from "./WalletConnector";
 import { ManualWalletForm } from "./ManualWalletForm";
+import { PriceTrendChart } from "./PriceTrendChart";
 import { 
   Wallet, Plus, TrendingUp, PieChart, 
   DollarSign, Eye, Trash2, RefreshCw, Coins, ChevronRight, Edit3
@@ -336,62 +337,99 @@ export const AssetDashboardV2 = () => {
               </div>
             </div>
 
-            {/* Connected Wallets - Clickable */}
+            {/* Wallet Distribution Pie Chart */}
             <div className="glass-card p-6">
               <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-primary" />
                 组合钱包
               </h2>
 
-              <div className="space-y-3">
-                {wallets.map(wallet => {
-                  const walletAssets = assets.filter(a => a.walletId === wallet.id);
-                  const walletValue = walletAssets.reduce((sum, a) => sum + a.value, 0);
-                  return (
-                    <div 
-                      key={wallet.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
-                    >
-                      <div 
-                        className="flex items-center gap-3 flex-1 cursor-pointer"
-                        onClick={() => setSelectedWalletId(wallet.id)}
-                      >
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Wallet className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm group-hover:text-primary transition-colors">{wallet.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-display font-semibold">
-                          ${walletValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveWallet(wallet.id);
-                          }}
-                          className="p-1 h-8 w-8 text-muted-foreground hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                        <ChevronRight 
-                          className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors cursor-pointer" 
+              <div className="flex items-center gap-8">
+                {/* Pie Chart */}
+                <div className="relative w-32 h-32">
+                  <svg viewBox="0 0 100 100" className="transform -rotate-90">
+                    {(() => {
+                      let offset = 0;
+                      const walletValues = wallets.map(wallet => ({
+                        wallet,
+                        value: assets.filter(a => a.walletId === wallet.id).reduce((sum, a) => sum + a.value, 0)
+                      }));
+                      const total = walletValues.reduce((sum, w) => sum + w.value, 0);
+                      if (total === 0) return null;
+                      
+                      const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+                      
+                      return walletValues.map((item, index) => {
+                        const percentage = (item.value / total) * 100;
+                        const dashArray = `${percentage} ${100 - percentage}`;
+                        const currentOffset = offset;
+                        offset += percentage;
+                        return (
+                          <circle
+                            key={item.wallet.id}
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            fill="none"
+                            stroke={colors[index % colors.length]}
+                            strokeWidth="20"
+                            strokeDasharray={dashArray}
+                            strokeDashoffset={-currentOffset}
+                            className="transition-all duration-500 cursor-pointer hover:opacity-80"
+                            onClick={() => setSelectedWalletId(item.wallet.id)}
+                          />
+                        );
+                      });
+                    })()}
+                  </svg>
+                </div>
+
+                {/* Legend */}
+                <div className="flex-1 space-y-2">
+                  {(() => {
+                    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+                    return wallets.map((wallet, index) => {
+                      const walletValue = assets.filter(a => a.walletId === wallet.id).reduce((sum, a) => sum + a.value, 0);
+                      return (
+                        <div 
+                          key={wallet.id} 
+                          className="flex items-center justify-between text-sm cursor-pointer hover:bg-muted/50 p-1 rounded transition-colors"
                           onClick={() => setSelectedWalletId(wallet.id)}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: colors[index % colors.length] }}
+                            />
+                            <span className="truncate max-w-[100px]">{wallet.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-display font-semibold">
+                              ${walletValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveWallet(wallet.id);
+                              }}
+                              className="p-0 h-6 w-6 text-muted-foreground hover:text-destructive"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Price Trend Chart */}
+          <PriceTrendChart assets={filteredAssets} />
 
           {/* Holdings Details with Category Tabs */}
           <div className="glass-card overflow-hidden">
@@ -578,50 +616,10 @@ export const AssetDashboardV2 = () => {
                 </div>
               </div>
             </div>
-
-            {/* Earnings by Asset */}
-            <div className="glass-card p-6">
-              <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                收益明细
-              </h2>
-
-              <div className="space-y-3 max-h-[280px] overflow-y-auto">
-                {filteredAssets.filter(a => a.profit !== 0 || a.apy7d > 0).map((asset, index) => (
-                  <div 
-                    key={`${asset.token}-${asset.walletId}-${index}`}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                        style={{ backgroundColor: CATEGORY_INFO[asset.category].color }}
-                      >
-                        {asset.token.slice(0, 2)}
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">{asset.token}</p>
-                        <p className="text-xs text-muted-foreground">{asset.chain}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className={cn(
-                        "font-display font-semibold",
-                        asset.profit >= 0 ? "text-green-500" : "text-red-500"
-                      )}>
-                        {asset.profit >= 0 ? '+' : ''}${asset.profit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                      </p>
-                      {asset.apy7d > 0 && (
-                        <p className="text-xs text-muted-foreground">
-                          {asset.apy7d}% APY
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
+
+          {/* Price Trend Chart */}
+          <PriceTrendChart assets={filteredAssets} />
 
           {/* Holdings Table with Category Tabs */}
           <div className="glass-card overflow-hidden">
