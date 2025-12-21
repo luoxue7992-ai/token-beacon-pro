@@ -30,7 +30,6 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
     { id: 1, title: t('confirmCompanyRestrictions'), icon: Building },
     { id: 2, title: t('investorQualificationCheck'), icon: Shield },
     { id: 3, title: t('requiredMaterials'), icon: FileText },
-    { id: 4, title: t('submitApplication'), icon: CheckCircle },
   ];
 
   const handleTelegramClick = () => {
@@ -278,39 +277,10 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
             </div>
           )}
 
-          {currentStep === 4 && (
-            <div className="space-y-6 text-center py-8">
-              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                <CheckCircle className="w-10 h-10 text-primary" />
-              </div>
-              
-              <div>
-                <h3 className="font-display font-semibold text-xl mb-2">{t('readyTitle')}</h3>
-                <p className="text-muted-foreground">
-                  {t('readyDescription')}
-                </p>
-              </div>
-
-              <div className="flex justify-center pt-4">
-                <Button 
-                  size="lg" 
-                  className="gap-2"
-                  onClick={handleFeishuClick}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  {t('feishuGroup')}
-                </Button>
-              </div>
-
-              <p className="text-xs text-muted-foreground pt-4">
-                {t('feishuNote')}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Navigation */}
-        {currentStep < 4 && (
+        {currentStep < 3 && (
           <div className="flex justify-between pt-6 border-t border-border">
             <Button 
               variant="outline" 
@@ -321,7 +291,7 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
               {t('previousStep')}
             </Button>
             <Button 
-              onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
+              onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
               disabled={!canProceed()}
             >
               {t('nextStep')}
