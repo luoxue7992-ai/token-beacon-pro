@@ -63,18 +63,15 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const handleAddDecentralized = () => {
-    if (!walletAddress || selectedChains.length === 0 || !selectedPlatform) return;
-    
-    const platformName = WALLET_PLATFORMS.find(p => p.id === selectedPlatform)?.[language === 'zh' ? 'nameZh' : 'name'] || selectedPlatform;
+    if (!walletAddress || selectedChains.length === 0) return;
     
     const newEntry: WalletEntry = {
       id: generateId(),
       address: walletAddress,
       type: 'decentralized',
-      name: walletName || `${platformName} ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
+      name: walletName || `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
       status: 'authorized',
       chains: selectedChains,
-      platform: selectedPlatform
     };
     
     setWalletEntries(prev => [...prev, newEntry]);
@@ -348,23 +345,6 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
               </div>
               <div>
                 <label className="text-sm font-medium mb-1.5 block">
-                  {language === 'zh' ? '钱包平台' : 'Wallet Platform'}
-                </label>
-                <select
-                  value={selectedPlatform}
-                  onChange={(e) => setSelectedPlatform(e.target.value)}
-                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <option value="">{language === 'zh' ? '请选择钱包平台' : 'Select a platform'}</option>
-                  {WALLET_PLATFORMS.map(platform => (
-                    <option key={platform.id} value={platform.id}>
-                      {language === 'zh' ? platform.nameZh : platform.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">
                   {language === 'zh' ? '钱包名称（可选）' : 'Wallet Name (optional)'}
                 </label>
                 <Input
@@ -386,7 +366,7 @@ export const WalletConnector = ({ onConnect }: WalletConnectorProps) => {
               <Button 
                 className="w-full gap-2" 
                 onClick={handleAddDecentralized}
-                disabled={!walletAddress || selectedChains.length === 0 || !selectedPlatform}
+                disabled={!walletAddress || selectedChains.length === 0}
               >
                 <Plus className="w-4 h-4" />
                 {language === 'zh' ? '添加到列表' : 'Add to List'}
