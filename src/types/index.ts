@@ -56,7 +56,7 @@ export interface WalletAsset {
 export interface ConnectedWallet {
   id: string;
   address: string;
-  type: 'decentralized' | 'exchange';
+  type: 'decentralized' | 'exchange' | 'manual';
   name: string;
   chains?: string[];
   platform?: string;
@@ -73,5 +73,15 @@ export interface DashboardAsset {
   profit: number;
   chain: string;
   walletId: string;
+  category: AssetCategory;
+  purchaseTime?: string;
+  purchasePrice?: number;
+}
+
+export interface ManualAssetInput {
+  token: string;
+  purchaseTime: string;
+  purchasePrice: number;
+  quantity: number;
   category: AssetCategory;
 }

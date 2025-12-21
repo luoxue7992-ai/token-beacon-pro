@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WalletConnector } from "./WalletConnector";
+import { ManualWalletForm } from "./ManualWalletForm";
 import { 
   Wallet, Plus, TrendingUp, PieChart, 
-  DollarSign, Eye, Trash2, RefreshCw, Coins, ChevronRight
+  DollarSign, Eye, Trash2, RefreshCw, Coins, ChevronRight, Edit3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAppStore } from "@/store/useAppStore";
-import { AssetCategory } from "@/types";
+import { AssetCategory, ManualAssetInput } from "@/types";
 
 const CATEGORY_INFO: Record<AssetCategory, { name: string; nameZh: string; color: string }> = {
   crypto: { name: 'Cryptocurrency', nameZh: '加密货币', color: '#f59e0b' },
@@ -23,11 +24,13 @@ export const AssetDashboardV2 = () => {
     dashboardWallets: wallets, 
     dashboardAssets: assets, 
     addDashboardWallet, 
+    addManualWallet,
     removeDashboardWallet 
   } = useAppStore();
   
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
   const [showAddWallet, setShowAddWallet] = useState(false);
+  const [addWalletMode, setAddWalletMode] = useState<'connect' | 'manual' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | 'all'>('all');
 
@@ -36,6 +39,17 @@ export const AssetDashboardV2 = () => {
     setTimeout(() => {
       addDashboardWallet(wallet);
       setShowAddWallet(false);
+      setAddWalletMode(null);
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  const handleManualWallet = (name: string, address: string, asset: ManualAssetInput) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      addManualWallet(name, address, asset);
+      setShowAddWallet(false);
+      setAddWalletMode(null);
       setIsLoading(false);
     }, 1500);
   };
@@ -96,14 +110,77 @@ export const AssetDashboardV2 = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold mb-1">添加钱包</h1>
-            <p className="text-muted-foreground">选择钱包类型并完成连接</p>
+            <p className="text-muted-foreground">
+              {addWalletMode === 'manual' ? '手动输入钱包和资产信息' : '选择添加方式'}
+            </p>
           </div>
-          <Button variant="outline" onClick={() => setShowAddWallet(false)}>
+          <Button variant="outline" onClick={() => { setShowAddWallet(false); setAddWalletMode(null); }}>
             取消
           </Button>
         </div>
 
-        <WalletConnector onConnect={handleConnectWallet} />
+        {/* Mode Selection */}
+        {!addWalletMode && (
+          <div className="grid md:grid-cols-2 gap-4">
+            <button
+              onClick={() => setAddWalletMode('connect')}
+              className="glass-card p-6 text-left hover:border-primary/50 transition-all group"
+            >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4">
+                <Wallet className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                连接钱包
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                连接去中心化钱包或交易所账户，自动同步资产数据
+              </p>
+            </button>
+
+            <button
+              onClick={() => setAddWalletMode('manual')}
+              className="glass-card p-6 text-left hover:border-primary/50 transition-all group"
+            >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4">
+                <Edit3 className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                手动添加
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                手动输入钱包地址和购买的资产信息
+              </p>
+            </button>
+          </div>
+        )}
+
+        {/* Connect Wallet Mode */}
+        {addWalletMode === 'connect' && (
+          <div className="space-y-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => setAddWalletMode(null)}
+              className="gap-2 text-muted-foreground"
+            >
+              ← 返回选择
+            </Button>
+            <WalletConnector onConnect={handleConnectWallet} />
+          </div>
+        )}
+
+        {/* Manual Wallet Mode */}
+        {addWalletMode === 'manual' && (
+          <div className="space-y-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => setAddWalletMode(null)}
+              className="gap-2 text-muted-foreground"
+            >
+              ← 返回选择
+            </Button>
+            <ManualWalletForm onSubmit={handleManualWallet} isLoading={isLoading} />
+          </div>
+        )}
       </div>
     );
   }
