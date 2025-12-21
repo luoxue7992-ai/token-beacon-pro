@@ -33,16 +33,9 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
     { id: 4, title: t('submitApplication'), icon: CheckCircle },
   ];
 
-  const REQUIRED_DOCUMENTS = [
-    { id: 'license', name: t('docBusinessLicense'), desc: t('docBusinessLicenseDesc') },
-    { id: 'legal_rep', name: t('docLegalRep'), desc: t('docLegalRepDesc') },
-    { id: 'articles', name: t('docArticles'), desc: t('docArticlesDesc') },
-    { id: 'financial', name: t('docFinancial'), desc: t('docFinancialDesc') },
-    { id: 'investor_cert', name: t('docInvestorCert'), desc: t('docInvestorCertDesc') },
-    { id: 'aml', name: t('docAml'), desc: t('docAmlDesc') },
-    { id: 'board', name: t('docBoard'), desc: t('docBoardDesc') },
-    { id: 'ubo', name: t('docUbo'), desc: t('docUboDesc') },
-  ];
+  const handleTelegramClick = () => {
+    window.open('https://t.me/your_telegram_channel', '_blank');
+  };
 
   const canProceed = () => {
     switch (currentStep) {
@@ -222,53 +215,65 @@ export const AccountOpeningFlow = ({ product, onBack }: AccountOpeningFlowProps)
           {currentStep === 3 && (
             <div className="space-y-6">
               <h3 className="font-display font-semibold text-lg">{t('requiredDocumentsTitle')}</h3>
-              <p className="text-muted-foreground text-sm">{language === 'zh' ? '请准备以下开户所需材料：' : 'Please prepare the following documents for account opening:'}</p>
+              <p className="text-muted-foreground text-sm">
+                {language === 'zh' ? '下载开户资料清单，准备齐全后联系我们' : 'Download the document checklist, then contact us when ready'}
+              </p>
               
-              <div className="grid md:grid-cols-2 gap-3">
-                {REQUIRED_DOCUMENTS.map((doc, index) => (
-                  <div 
-                    key={doc.id}
-                    className="p-4 rounded-lg border border-border bg-muted/30"
-                  >
-                    <div className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-sm font-medium flex items-center justify-center">
-                        {index + 1}
-                      </span>
-                      <div>
-                        <p className="font-medium text-sm">{doc.name}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{doc.desc}</p>
-                      </div>
-                    </div>
+              {/* Download Section */}
+              <div className="p-6 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-primary" />
                   </div>
-                ))}
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-primary/5 border border-primary/20">
-                <div>
-                  <p className="font-medium text-sm">
-                    {language === 'zh' ? '官方开户文档' : 'Official Account Opening Documents'}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {language === 'zh' ? '下载完整的开户资料模板和填写指南' : 'Download complete account opening templates and guidelines'}
-                  </p>
+                  <div>
+                    <p className="font-display font-semibold">
+                      {language === 'zh' ? '开户资料清单及详情' : 'Account Opening Document Checklist'}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {language === 'zh' ? '包含所需文件列表、格式要求及填写指南' : 'Includes required documents, format requirements, and guidelines'}
+                    </p>
+                  </div>
                 </div>
                 <Button 
-                  variant="outline" 
-                  className="gap-2 flex-shrink-0"
+                  size="lg"
+                  className="w-full gap-2"
                   onClick={() => {
-                    // TODO: Replace with actual document URL
-                    window.open('/documents/account-opening-guide.pdf', '_blank');
+                    window.open('/documents/account-opening-checklist.pdf', '_blank');
                   }}
                 >
-                  <Download className="w-4 h-4" />
-                  {language === 'zh' ? '一键下载' : 'Download'}
+                  <Download className="w-5 h-5" />
+                  {language === 'zh' ? '下载资料清单' : 'Download Checklist'}
                 </Button>
               </div>
 
-              <div className="p-4 rounded-lg bg-info/10 border border-info/20">
-                <p className="text-sm text-info">
-                  {language === 'zh' ? '请确保以上材料齐全，以便顺利完成开户申请。' : 'Please ensure all documents are ready to complete the account opening process smoothly.'}
+              {/* Contact Section */}
+              <div className="p-6 rounded-xl bg-muted/50 border border-border">
+                <p className="font-display font-semibold mb-2">
+                  {language === 'zh' ? '一键沟通' : 'Contact Us'}
                 </p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {language === 'zh' ? '资料准备好后，选择您常用的沟通工具联系我们' : 'Contact us via your preferred platform once documents are ready'}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    className="gap-2"
+                    onClick={handleFeishuClick}
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    {language === 'zh' ? '飞书' : 'Feishu'}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    className="gap-2"
+                    onClick={handleTelegramClick}
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    Telegram
+                  </Button>
+                </div>
               </div>
             </div>
           )}
