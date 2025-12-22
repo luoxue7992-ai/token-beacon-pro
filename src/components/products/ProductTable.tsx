@@ -4,6 +4,11 @@ import { useAppStore } from "@/store/useAppStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { 
   Search, Star, ChevronUp, ChevronDown, ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -229,7 +234,7 @@ export const ProductTable = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
                     <div className="flex flex-wrap gap-1 max-w-[150px]">
                       {product.chains.slice(0, 2).map((chain) => (
                         <span key={chain} className="chip bg-info/10 text-info text-xs">
@@ -237,9 +242,22 @@ export const ProductTable = () => {
                         </span>
                       ))}
                       {product.chains.length > 2 && (
-                        <span className="chip bg-info/10 text-info text-xs">
-                          +{product.chains.length - 2}
-                        </span>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button className="chip bg-info/10 text-info text-xs cursor-pointer hover:bg-info/20 transition-colors">
+                              +{product.chains.length - 2}
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-2 bg-popover border border-border shadow-lg z-50">
+                            <div className="flex flex-wrap gap-1 max-w-[200px]">
+                              {product.chains.slice(2).map((chain) => (
+                                <span key={chain} className="chip bg-info/10 text-info text-xs">
+                                  {chain}
+                                </span>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       )}
                     </div>
                   </td>
