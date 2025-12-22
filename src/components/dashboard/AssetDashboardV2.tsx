@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WalletConnector } from "./WalletConnector";
 import { ManualWalletForm } from "./ManualWalletForm";
-import { PriceTrendChart } from "./PriceTrendChart";
+import { MarketValueTrendChart } from "./MarketValueTrendChart";
 import { 
   Wallet, Plus, TrendingUp, PieChart, 
   DollarSign, Eye, Trash2, RefreshCw, Coins, ChevronRight, Edit3
@@ -428,8 +428,8 @@ export const AssetDashboardV2 = () => {
             </div>
           </div>
 
-          {/* Price Trend Chart */}
-          <PriceTrendChart assets={filteredAssets} />
+          {/* Market Value Trend Chart */}
+          <MarketValueTrendChart assets={filteredAssets} />
 
           {/* Holdings Details with Category Tabs */}
           <div className="glass-card overflow-hidden">
@@ -616,8 +616,8 @@ export const AssetDashboardV2 = () => {
             </div>
           </div>
 
-          {/* Price Trend Chart */}
-          <PriceTrendChart assets={filteredAssets} />
+          {/* Market Value Trend Chart */}
+          <MarketValueTrendChart assets={filteredAssets} />
 
           {/* Holdings Table with Category Tabs */}
           <div className="glass-card overflow-hidden">
