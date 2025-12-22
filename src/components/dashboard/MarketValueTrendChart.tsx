@@ -146,7 +146,7 @@ export const MarketValueTrendChart = ({ assets }: MarketValueTrendChartProps) =>
       </div>
 
       {/* Chart with Right Legend */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-end">
         {/* Chart */}
         <div className="flex-1 h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -204,8 +204,8 @@ export const MarketValueTrendChart = ({ assets }: MarketValueTrendChartProps) =>
           </ResponsiveContainer>
         </div>
 
-        {/* Right Legend - 2 columns */}
-        <div className="grid grid-cols-2 gap-x-3 gap-y-2 min-w-[120px] py-2 content-start">
+        {/* Right Legend - 2 columns, bottom aligned */}
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2 min-w-[120px] pb-6 content-end">
           <div className="flex items-center gap-1.5 text-xs">
             <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
             <span className="text-muted-foreground truncate">{language === 'zh' ? '总市值' : 'Total'}</span>
