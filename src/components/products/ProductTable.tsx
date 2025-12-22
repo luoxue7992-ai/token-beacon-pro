@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 
-type SortField = 'marketCap' | 'apy7d' | 'managementFee' | 'name';
+type SortField = 'marketCap' | 'apy7d' | 'managementFee' | 'subscriptionFee' | 'redemptionFee' | 'revenueShare' | 'name';
 type SortDirection = 'asc' | 'desc';
 
 export const ProductTable = () => {
@@ -65,6 +65,15 @@ export const ProductTable = () => {
           break;
         case 'managementFee':
           comparison = a.managementFee - b.managementFee;
+          break;
+        case 'subscriptionFee':
+          comparison = a.subscriptionFee - b.subscriptionFee;
+          break;
+        case 'redemptionFee':
+          comparison = a.redemptionFee - b.redemptionFee;
+          break;
+        case 'revenueShare':
+          comparison = a.revenueShare - b.revenueShare;
           break;
         case 'name':
           comparison = a.name.localeCompare(b.name);
@@ -170,15 +179,9 @@ export const ProductTable = () => {
                 </th>
                 <SortHeader field="apy7d">{t('sevenDayApy')}</SortHeader>
                 <SortHeader field="managementFee">{t('managementFee')}</SortHeader>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  {t('subscriptionFee')}
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  {t('redemptionFee')}
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  {t('revenueShare')}
-                </th>
+                <SortHeader field="subscriptionFee">{t('subscriptionFee')}</SortHeader>
+                <SortHeader field="redemptionFee">{t('redemptionFee')}</SortHeader>
+                <SortHeader field="revenueShare">{t('revenueShare')}</SortHeader>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
