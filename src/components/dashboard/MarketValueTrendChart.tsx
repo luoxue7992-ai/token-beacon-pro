@@ -145,81 +145,94 @@ export const MarketValueTrendChart = ({ assets }: MarketValueTrendChartProps) =>
         </Tabs>
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap gap-4 mb-4">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <div className="w-3 h-3 rounded-full bg-primary" />
-          <span>{language === 'zh' ? '钱包总市值' : 'Total Wallet Value'}</span>
-          <span className="text-primary font-semibold">
-            ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </span>
-        </div>
-        {chartData.assetList.map((asset) => (
-          <div key={asset.token} className="flex items-center gap-2 text-sm">
-            <div 
-              className="w-3 h-3 rounded-full" 
-              style={{ backgroundColor: asset.color }}
-            />
-            <span>{asset.token}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Combined Chart */}
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData.data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-            <XAxis 
-              dataKey="date" 
-              tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-              tickLine={false}
-              axisLine={false}
-              interval="preserveStartEnd"
-            />
-            <YAxis 
-              tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-              tickLine={false}
-              axisLine={false}
-              width={70}
-              tickFormatter={(value) => `$${(value / 1000).toFixed(1)}k`}
-            />
-            <Tooltip 
-              contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-                fontSize: '12px',
-              }}
-              formatter={(value: number, name: string) => [
-                `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                name === 'total' ? (language === 'zh' ? '钱包总市值' : 'Total Wallet Value') : name
-              ]}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
-            />
-            {/* Total line - thicker and prominent */}
-            <Line
-              type="monotone"
-              dataKey="total"
-              stroke={TOTAL_COLOR}
-              strokeWidth={3}
-              dot={false}
-              activeDot={{ r: 5, strokeWidth: 0 }}
-            />
-            {/* Individual asset lines */}
-            {chartData.assetList.map((asset) => (
-              <Line
-                key={asset.token}
-                type="monotone"
-                dataKey={asset.token}
-                stroke={asset.color}
-                strokeWidth={1.5}
-                dot={false}
-                activeDot={{ r: 4, strokeWidth: 0 }}
+      {/* Chart with Right Legend */}
+      <div className="flex gap-4">
+        {/* Chart */}
+        <div className="flex-1 h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData.data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+              <XAxis 
+                dataKey="date" 
+                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                tickLine={false}
+                axisLine={false}
+                interval="preserveStartEnd"
               />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
+              <YAxis 
+                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                tickLine={false}
+                axisLine={false}
+                width={70}
+                tickFormatter={(value) => `$${(value / 1000).toFixed(1)}k`}
+              />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: 'hsl(var(--card))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                }}
+                formatter={(value: number, name: string) => [
+                  `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                  name === 'total' ? (language === 'zh' ? '钱包总市值' : 'Total Wallet Value') : name
+                ]}
+                labelStyle={{ color: 'hsl(var(--foreground))' }}
+              />
+              {/* Total line - thicker and prominent */}
+              <Line
+                type="monotone"
+                dataKey="total"
+                stroke={TOTAL_COLOR}
+                strokeWidth={3}
+                dot={false}
+                activeDot={{ r: 5, strokeWidth: 0 }}
+              />
+              {/* Individual asset lines */}
+              {chartData.assetList.map((asset) => (
+                <Line
+                  key={asset.token}
+                  type="monotone"
+                  dataKey={asset.token}
+                  stroke={asset.color}
+                  strokeWidth={1.5}
+                  dot={false}
+                  activeDot={{ r: 4, strokeWidth: 0 }}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Right Legend */}
+        <div className="flex flex-col gap-3 min-w-[140px] py-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">{language === 'zh' ? '钱包总市值' : 'Total'}</span>
+              <span className="text-primary font-semibold text-sm">
+                ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+          </div>
+          {chartData.assetList.map((asset) => {
+            const assetData = assets.find(a => a.token === asset.token);
+            return (
+              <div key={asset.token} className="flex items-center gap-2 text-sm">
+                <div 
+                  className="w-3 h-3 rounded-full flex-shrink-0" 
+                  style={{ backgroundColor: asset.color }}
+                />
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground">{asset.token}</span>
+                  <span className="font-medium text-sm" style={{ color: asset.color }}>
+                    ${assetData?.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
