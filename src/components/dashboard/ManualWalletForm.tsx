@@ -33,27 +33,25 @@ export const ManualWalletForm = ({ onSubmit, isLoading }: ManualWalletFormProps)
   const { language } = useLanguage();
   
   const [walletName, setWalletName] = useState("");
-  const [walletAddress, setWalletAddress] = useState(() => {
-    // Generate a random wallet address
-    const chars = '0123456789abcdef';
-    let address = '0x';
-    for (let i = 0; i < 40; i++) {
-      address += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return address;
-  });
   const [selectedAsset, setSelectedAsset] = useState("");
   const [purchaseTime, setPurchaseTime] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
   const [quantity, setQuantity] = useState("");
 
   const handleSubmit = () => {
-    if (!walletName || !walletAddress || !selectedAsset || !purchaseTime || !purchasePrice || !quantity) {
+    if (!walletName || !selectedAsset || !purchaseTime || !purchasePrice || !quantity) {
       return;
     }
 
     const assetOption = ASSET_OPTIONS.find(a => a.value === selectedAsset);
     if (!assetOption) return;
+
+    // Generate a random wallet address
+    const chars = '0123456789abcdef';
+    let walletAddress = '0x';
+    for (let i = 0; i < 40; i++) {
+      walletAddress += chars[Math.floor(Math.random() * chars.length)];
+    }
 
     const asset: ManualAssetInput = {
       token: selectedAsset,
@@ -66,7 +64,7 @@ export const ManualWalletForm = ({ onSubmit, isLoading }: ManualWalletFormProps)
     onSubmit(walletName, walletAddress, asset);
   };
 
-  const isFormValid = walletName && walletAddress && selectedAsset && purchaseTime && purchasePrice && quantity;
+  const isFormValid = walletName && selectedAsset && purchaseTime && purchasePrice && quantity;
 
   return (
     <div className="glass-card p-6 space-y-6">
@@ -96,21 +94,6 @@ export const ManualWalletForm = ({ onSubmit, isLoading }: ManualWalletFormProps)
             value={walletName}
             onChange={(e) => setWalletName(e.target.value)}
             maxLength={50}
-          />
-        </div>
-
-        {/* Wallet Address */}
-        <div className="space-y-2">
-          <Label htmlFor="walletAddress">
-            {language === 'zh' ? '钱包地址' : 'Wallet Address'}
-          </Label>
-          <Input
-            id="walletAddress"
-            placeholder="0x..."
-            value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)}
-            className="font-mono text-sm"
-            maxLength={100}
           />
         </div>
 
