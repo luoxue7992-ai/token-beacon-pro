@@ -149,7 +149,7 @@ export const AssetDashboardV2 = () => {
                 手动添加
               </h3>
               <p className="text-sm text-muted-foreground">
-                手动输入钱包地址和购买的资产信息
+                手动输入钱包名称和购买的资产信息
               </p>
             </button>
           </div>
