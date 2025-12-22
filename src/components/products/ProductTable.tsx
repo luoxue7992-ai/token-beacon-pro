@@ -179,9 +179,6 @@ export const ProductTable = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {t('revenueShare')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  操作
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
@@ -257,17 +254,6 @@ export const ProductTable = () => {
                   </td>
                   <td className="px-4 py-4 font-display">
                     {product.revenueShare}%
-                  </td>
-                  <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      className="gap-1"
-                      onClick={() => setSelectedProductId(product.id)}
-                    >
-                      {t('viewDetails')}
-                      <ExternalLink className="w-3 h-3" />
-                    </Button>
                   </td>
                 </tr>
               ))}
