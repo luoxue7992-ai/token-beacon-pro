@@ -204,34 +204,21 @@ export const MarketValueTrendChart = ({ assets }: MarketValueTrendChartProps) =>
           </ResponsiveContainer>
         </div>
 
-        {/* Right Legend */}
-        <div className="flex flex-col gap-3 min-w-[140px] py-2">
-          <div className="flex items-center gap-2 text-sm font-medium">
-            <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
-            <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">{language === 'zh' ? '钱包总市值' : 'Total'}</span>
-              <span className="text-primary font-semibold text-sm">
-                ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-            </div>
+        {/* Right Legend - 2 columns */}
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2 min-w-[120px] py-2 content-start">
+          <div className="flex items-center gap-1.5 text-xs">
+            <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+            <span className="text-muted-foreground truncate">{language === 'zh' ? '总市值' : 'Total'}</span>
           </div>
-          {chartData.assetList.map((asset) => {
-            const assetData = assets.find(a => a.token === asset.token);
-            return (
-              <div key={asset.token} className="flex items-center gap-2 text-sm">
-                <div 
-                  className="w-3 h-3 rounded-full flex-shrink-0" 
-                  style={{ backgroundColor: asset.color }}
-                />
-                <div className="flex flex-col">
-                  <span className="text-xs text-muted-foreground">{asset.token}</span>
-                  <span className="font-medium text-sm" style={{ color: asset.color }}>
-                    ${assetData?.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+          {chartData.assetList.map((asset) => (
+            <div key={asset.token} className="flex items-center gap-1.5 text-xs">
+              <div 
+                className="w-2 h-2 rounded-full flex-shrink-0" 
+                style={{ backgroundColor: asset.color }}
+              />
+              <span className="text-muted-foreground truncate">{asset.token}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
